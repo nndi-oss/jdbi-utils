@@ -8,6 +8,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static cloud.nndi.oss.jdbi.customizers.CapitalizeCustomizer.capitalize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestCapitalizeCustomizer {
@@ -34,7 +35,7 @@ public class TestCapitalizeCustomizer {
             .createUpdate("INSERT INTO people2(first_name, last_name) VALUES (:first_name, :last_name)")
             .bind("first_name", "John William")
             .bind("last_name", "Banda")
-            .addCustomizer(new CapitalizeCustomizer("first_name", "last_name"))
+            .addCustomizer(capitalize("first_name", "last_name"))
             .execute();
 
         String got = hsql.getSharedHandle()

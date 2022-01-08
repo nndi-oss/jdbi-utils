@@ -13,6 +13,10 @@ import java.util.Optional;
 public class CapitalizeCustomizer implements StatementCustomizer {
     private final String[] bindings;
 
+    public static CapitalizeCustomizer capitalize(String... bindings) {
+        return new CapitalizeCustomizer(bindings);
+    }
+
     public CapitalizeCustomizer(String... bindings) {
         this.bindings = bindings;
     }
