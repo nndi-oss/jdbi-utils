@@ -107,34 +107,6 @@ public class Application {
 > NOTE: You don't necessarily have to use the `@BindBean` annotation. It should work with any
 binding annotation - but that's not been tested thoroughly.
 
-### UseMonoSqlLocator
-
-This module allows you to write SQL queries in one file and load them by name,
-it's kinda like goyesql. Uses the default SqlParser
-
-
-Example
-    
-```java
-@UseMonoSqlLocator
-interface UserDAO {
-    List<User> findAllDevelopers();
-    
-    Optional<User> findOneByUsername(@Bind String username);
-}
-```
-
-```sql
--- file src/main/resources/com/example/UserDAO.sql
-
--- name: findAllByUsername
-SELECT * FROM users WHERE isDeveloper = true
-
--- name: findOneByUsername
-SELECT * FROM users WHERE username := username LIMIT 1
-
-```
-
 
 ### @UseClasspathSqlLocator compile-time checks
 
