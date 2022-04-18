@@ -33,7 +33,7 @@
     <properties>
         <jdbi-utils.version>0.1.0-SNAPSHOT</jdbi-utils.version>
         <slf4j.version>1.7.21</slf4j.version>
-        <jdbi.version>3.13.0</jdbi.version>
+        <jdbi.version>3.28.0</jdbi.version>
         <hsqldb.version>2.3.4</hsqldb.version>
         <hibernate-validator.version>6.1.5.Final</hibernate-validator.version>
         <junit.jupiter.version>5.0.1</junit.jupiter.version>
