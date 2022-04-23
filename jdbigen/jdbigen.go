@@ -341,8 +341,6 @@ func PgExecuteCustomTmpl(st *StructTmpl, customTmpl string) ([]byte, error) {
 func PgCreateStruct(
 	db Queryer, schema, typeMapPath, pkgName, customTmpl string, exTbls []string) ([]byte, error) {
 	var src []byte
-	pkgDef := []byte(fmt.Sprintf("package %s\n\n", pkgName))
-	src = append(src, pkgDef...)
 
 	tbls, err := PgLoadTableDef(db, schema)
 	if err != nil {
@@ -377,11 +375,20 @@ func PgCreateStruct(
 			}
 			src = append(src, s...)
 		} else {
+			if pkgName != "" {
+                pkgDef := []byte(fmt.Sprintf("package %s;\n\n", pkgName))
+                src = append(src, pkgDef...)
+        	}
     		c, err := PgExecuteDefaultTmpl(&StructTmpl{Struct: st}, "template/class.tmpl")
             if err != nil {
                 return src, errors.Wrap(err, "faield to execute template")
             }
             src = append(src, c...)
+            src = append(src, []byte("\n----\n\n")...)
+            if pkgName != "" {
+                pkgDef := []byte(fmt.Sprintf("package %s;\n\n", pkgName))
+                src = append(src, pkgDef...)
+            }
 
             if *generateAsSqlHandle {
                 m, err := PgExecuteDefaultTmpl(&StructTmpl{Struct: st}, "template/usehandle.tmpl")
