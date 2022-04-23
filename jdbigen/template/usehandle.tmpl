@@ -44,7 +44,7 @@ public class {{ .Struct.Name }}DAO {
 
     public void update({{ .Struct.Name }}Entity entity) {
         jdbi.withHandle(handle -> {
-            return handle.createUpdate("")
+            return handle.createUpdate("{{ createUpdateByPkSQL .Struct }}")
                 {{- range .Struct.Fields }}
                 .bind("{{ .Name }}", entity.get{{ .Name }}())
                 {{- end }}

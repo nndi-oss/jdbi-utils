@@ -17,6 +17,7 @@ var tmplFuncMap = template.FuncMap{
 	"createSelectByPkSQLParams":  createSelectByPkSQLParams,
 	"createSelectByPkScan":       createSelectByPkScan,
 	"createDeleteByPkSQL":        createDeleteByPkSQL,
+	"createUpdateByPkSQL":        createUpdateByPkSQL,
 	"flattenStructFieldNames": flattenStructFieldNames,
 	"getPrimaryKeyFieldType": getPrimaryKeyFieldType,
 }
@@ -47,11 +48,11 @@ func createSelectByPkSQL(st *Struct) string {
 	}
 	sql = "SELECT " + flatten(colNames, ", ") + " FROM " + st.Table.Name + " WHERE "
 	for i, c := range pkNames {
-		placeHolder := i + 1
+		placeHolder := i
 		if i == 0 {
-			sql = sql + c + fmt.Sprintf(" = $%d", placeHolder)
+			sql = sql + c + fmt.Sprintf(" = :%d", placeHolder)
 		} else {
-			sql = sql + " AND " + c + fmt.Sprintf(" = $%d", placeHolder)
+			sql = sql + " AND " + c + fmt.Sprintf(" = :%d", placeHolder)
 		}
 	}
 	return sql
@@ -142,11 +143,11 @@ func placeholders(l []string) string {
 	var ph string
 	var j int
 	for i := range l {
-		j = i + 1
+		j = i
 		if i == 0 {
-			ph = ph + fmt.Sprintf("$%d", j)
+			ph = ph + fmt.Sprintf(":%d", j)
 		} else {
-			ph = ph + fmt.Sprintf(", $%d", j)
+			ph = ph + fmt.Sprintf(", :%d", j)
 		}
 	}
 	return ph
@@ -205,11 +206,34 @@ func createDeleteByPkSQL(st *Struct) string {
 	}
 	sql = "DELETE FROM " + st.Table.Name + " WHERE "
 	for i, c := range pkNames {
-		placeHolder := i + 1
+	    placeHolder := i
 		if i == 0 {
-			sql = sql + c + fmt.Sprintf(" = $%d", placeHolder)
+			sql = sql + c + fmt.Sprintf(" = :%d", placeHolder)
 		} else {
-			sql = sql + " AND " + c + fmt.Sprintf(" = $%d", placeHolder)
+			sql = sql + " AND " + c + fmt.Sprintf(" = :%d", placeHolder)
+		}
+	}
+	return sql
+}
+
+func createUpdateByPkSQL(st *Struct) string {
+	var sql string
+	var columnUpdates []string
+	var pkNames []string
+	for _, c := range st.Table.Columns {
+		if c.IsPrimaryKey {
+		    pkNames = append(pkNames, c.Name)
+			continue
+		}
+		columnUpdates = append(columnUpdates, fmt.Sprintf("%s = :e.%s", c.Name, c.Name))
+	}
+	sql = "UPDATE " + st.Table.Name + " SET " + flatten(columnUpdates, ", ") + " WHERE "
+	for i, c := range pkNames {
+	    placeHolder := i
+		if i == 0 {
+			sql = sql + c + fmt.Sprintf(" = :%d", placeHolder)
+		} else {
+			sql = sql + " AND " + c + fmt.Sprintf(" = :%d", placeHolder)
 		}
 	}
 	return sql

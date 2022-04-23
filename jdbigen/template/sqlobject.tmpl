@@ -21,7 +21,7 @@ public interface {{ .Struct.Name }}DAO {
     @SqlUpdate("{{ createBeanInsertSQL .Struct }}")
     void insert(@BindBean("e") {{ .Struct.Name }}Entity entity);
 
-    @SqlUpdate("{{ createInsertSQL .Struct }}")
+    @SqlUpdate("{{ createUpdateByPkSQL .Struct }}")
     void update(@BindBean("e") {{ .Struct.Name }}Entity entity);
 
     @SqlUpdate("{{ createDeleteByPkSQL .Struct }}")
