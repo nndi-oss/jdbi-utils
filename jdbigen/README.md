@@ -4,7 +4,7 @@ jdbigen
 `jdbigen` generates Java interfaces and classes for simple DAO functions from PostgreSQL table metadata.
 This based off of the awesome [dgw](https://github.com/achiku/dgw) project.
 
-> **NOTE:** jdbigen only supports PostgreSQL at the moment 
+> **IMPORTANT NOTE:** jdbigen only supports PostgreSQL at the moment and is also a *best effort* generator so you may have to edit the generated code. 
 
 ## Installation
 
