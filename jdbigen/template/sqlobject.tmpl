@@ -1,0 +1,29 @@
+import org.jdbi.v3.core.mapper.RowMapper;
+import org.jdbi.v3.sqlobject.config.RegisterRowMapper;
+import org.jdbi.v3.sqlobject.customizer.Bind;
+import org.jdbi.v3.sqlobject.customizer.BindBean;
+import org.jdbi.v3.sqlobject.customizer.Timestamped;
+import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
+import org.jdbi.v3.sqlobject.statement.SqlQuery;
+import org.jdbi.v3.sqlobject.statement.SqlUpdate;
+
+// {{ .Struct.Name }}Entity represents {{ .Struct.Table.Schema }}.{{ .Struct.Table.Name }}
+public interface {{ .Struct.Name }}DAO {
+    @SqlQuery("{{ createSelectSQL .Struct }}")
+    List<{{ .Struct.Name }}Entity> findAll();
+
+    @SqlQuery("{{ createSelectSQL .Struct }} OFFSET :offset LIMIT :limit")
+    List<{{ .Struct.Name }}Entity> findAllPaginated(@Bind("limit") int limit, @Bind("offset") int offset);
+
+    @SqlQuery("{{ createSelectByPkSQL .Struct }}")
+    Option<{{ .Struct.Name }}Entity> findById(@Bind("id") {{ getPrimaryKeyFieldType .Struct }} id);
+
+    @SqlUpdate("{{ createBeanInsertSQL .Struct }}")
+    void insert(@BindBean("e") {{ .Struct.Name }}Entity entity);
+
+    @SqlUpdate("{{ createInsertSQL .Struct }}")
+    void update(@BindBean("e") {{ .Struct.Name }}Entity entity);
+
+    @SqlUpdate("{{ createDeleteByPkSQL .Struct }}")
+    void delete(@Bind("id") {{ getPrimaryKeyFieldType .Struct }} id);
+}

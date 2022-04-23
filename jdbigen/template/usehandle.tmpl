@@ -1,0 +1,62 @@
+import org.jdbi.v3.core.Jdbi;
+
+import java.util.List;
+import java.util.Optional;
+
+// {{ .Struct.Name }} represents {{ .Struct.Table.Schema }}.{{ .Struct.Table.Name }}
+public class {{ .Struct.Name }}DAO {
+    private final Jdbi jdbi;
+
+    public {{ .Struct.Name }}DAO(Jdbi jdbi) {
+        this.jdbi = jdbi;
+    }
+
+    public List<{{ .Struct.Name }}Entity> findAll() {
+        return jdbi.withHandle(handle -> handle.createQuery("{{ createSelectSQL .Struct }}")
+            .mapToBean({{ .Struct.Name }}.class)
+            .list());
+    }
+
+    public List<{{ .Struct.Name }}Entity> findAllPaginated(int limit, int offset) {
+        return jdbi.withHandle(handle -> handle.createQuery("{{ createSelectSQL .Struct }} OFFSET :offset LIMIT :limit")
+                .bind("limit", limit)
+                .bind("offset", offset)
+                .mapToBean({{ .Struct.Name }}Entity.class)
+                .list());
+    }
+
+    public Optional<{{ .Struct.Name }}Entity> findById({{ getPrimaryKeyFieldType .Struct }} id) {
+        return jdbi.withHandle(handle -> handle.createQuery("{{ createSelectByPkSQL .Struct }}")
+            .bind(0, id)
+            .mapToBean({{ .Struct.Name }}Entity.class)
+            .findOne());
+    }
+
+    public void insert({{ .Struct.Name }}Entity entity) {
+        jdbi.withHandle(handle -> {
+            return handle.createUpdate("")
+                {{- range .Struct.Fields }}
+                .bind("{{ .Name }}", entity.get{{ .Name }}())
+                {{- end }}
+                .execute();
+        });
+    }
+
+    public void update({{ .Struct.Name }}Entity entity) {
+        jdbi.withHandle(handle -> {
+            return handle.createUpdate("")
+                {{- range .Struct.Fields }}
+                .bind("{{ .Name }}", entity.get{{ .Name }}())
+                {{- end }}
+                .execute();
+        });
+    }
+
+    public void delete({{ getPrimaryKeyFieldType .Struct }} id) {
+        jdbi.withHandle(handle -> {
+            return handle.createUpdate("{{ createDeleteByPkSQL .Struct }}")
+                .bind(0, {{ .Struct.Name }}.getId())
+                .execute();
+        });
+    }
+}
