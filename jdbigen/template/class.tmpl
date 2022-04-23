@@ -2,7 +2,8 @@
 @lombok.Data
 public class {{ .Struct.Name }}Entity {
     {{- range .Struct.Fields }}
-    private {{ .Type }} {{ .Name }};  // {{ .Column.Name }}
+    // @Column(name="{{ .Column.Name }}")
+    private {{ .Type }} {{ .Name }};
     {{- end }}
     // TODO: Generate Getters and Setters
 }

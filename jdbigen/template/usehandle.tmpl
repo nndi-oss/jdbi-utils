@@ -13,7 +13,7 @@ public class {{ .Struct.Name }}DAO {
 
     public List<{{ .Struct.Name }}Entity> findAll() {
         return jdbi.withHandle(handle -> handle.createQuery("{{ createSelectSQL .Struct }}")
-            .mapToBean({{ .Struct.Name }}.class)
+            .mapToBean({{ .Struct.Name }}Entity.class)
             .list());
     }
 
