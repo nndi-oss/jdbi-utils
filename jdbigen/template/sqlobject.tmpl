@@ -16,7 +16,7 @@ public interface {{ .Struct.Name }}DAO {
     List<{{ .Struct.Name }}Entity> findAllPaginated(@Bind("limit") int limit, @Bind("offset") int offset);
 
     @SqlQuery("{{ createSelectByPkSQL .Struct }}")
-    Option<{{ .Struct.Name }}Entity> findById(@Bind("id") {{ getPrimaryKeyFieldType .Struct }} id);
+    Option<{{ .Struct.Name }}Entity> findById(@Bind {{ getPrimaryKeyFieldType .Struct }} id);
 
     @SqlUpdate("{{ createBeanInsertSQL .Struct }}")
     void insert(@BindBean("e") {{ .Struct.Name }}Entity entity);
@@ -25,5 +25,5 @@ public interface {{ .Struct.Name }}DAO {
     void update(@BindBean("e") {{ .Struct.Name }}Entity entity);
 
     @SqlUpdate("{{ createDeleteByPkSQL .Struct }}")
-    void delete(@Bind("id") {{ getPrimaryKeyFieldType .Struct }} id);
+    void delete(@Bind {{ getPrimaryKeyFieldType .Struct }} id);
 }
