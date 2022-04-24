@@ -17,7 +17,6 @@ var (
 	pkgName          = kingpin.Flag("package", "package name").Default("").Short('p').String()
 	typeMapFilePath  = kingpin.Flag("typemap", "column type and go type map file path").Short('t').String()
 	exTbls           = kingpin.Flag("exclude", "table names to exclude").Short('x').Strings()
-	customTmpl       = kingpin.Flag("template", "custom template path").String()
 	outFile          = kingpin.Flag("output", "output file path").Short('o').String()
 	generateAsSqlHandle = kingpin.Flag("sqlhandle", "output as SQL handlers").Bool()
 )
@@ -30,7 +29,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	src, err := PgCreateStruct(conn, *schema, *typeMapFilePath, *pkgName, *customTmpl, *exTbls)
+	src, err := PgCreateStruct(conn, *schema, *typeMapFilePath, *pkgName, "", *exTbls)
 	if err != nil {
 		log.Fatal(err)
 	}
