@@ -2,13 +2,13 @@ package main
 
 import (
 	"fmt"
+	"strings"
 	"text/template"
 )
 
 var tmplFuncMap = template.FuncMap{
 	"createInsertSQL":            createInsertSQL,
-	// TODO: implement bean based insert SQL
-	"createBeanInsertSQL":            createInsertSQL,
+	"createBeanInsertSQL":            createBeanInsertSQL,
 	"createInsertParams":         createInsertParams,
 	"createInsertScan":           createInsertScan,
 	"createSelectSQL":        createSelectSQL,
@@ -18,8 +18,10 @@ var tmplFuncMap = template.FuncMap{
 	"createSelectByPkScan":       createSelectByPkScan,
 	"createDeleteByPkSQL":        createDeleteByPkSQL,
 	"createUpdateByPkSQL":        createUpdateByPkSQL,
+	// Utility functions
 	"flattenStructFieldNames": flattenStructFieldNames,
 	"getPrimaryKeyFieldType": getPrimaryKeyFieldType,
+	"ToUpper" : strings.ToUpper,
 }
 
 func createSelectSQL(st *Struct) string {
@@ -47,12 +49,12 @@ func createSelectByPkSQL(st *Struct) string {
 		colNames = append(colNames, c.Name)
 	}
 	sql = "SELECT " + flatten(colNames, ", ") + " FROM " + st.Table.Name + " WHERE "
+    placeHolder := " = ?"
 	for i, c := range pkNames {
-		placeHolder := i
 		if i == 0 {
-			sql = sql + c + fmt.Sprintf(" = :%d", placeHolder)
+			sql = sql + c + placeHolder
 		} else {
-			sql = sql + " AND " + c + fmt.Sprintf(" = :%d", placeHolder)
+			sql = sql + " AND " + c + placeHolder
 		}
 	}
 	return sql
@@ -141,13 +143,12 @@ func flatten(elems []string, sep string) string {
 
 func placeholders(l []string) string {
 	var ph string
-	var j int
+	placeHolder := "?"
 	for i := range l {
-		j = i
 		if i == 0 {
-			ph = ph + fmt.Sprintf(":%d", j)
+			ph = ph + placeHolder
 		} else {
-			ph = ph + fmt.Sprintf(", :%d", j)
+			ph = ph + fmt.Sprintf(", %s", placeHolder)
 		}
 	}
 	return ph
@@ -194,6 +195,47 @@ func createInsertSQL(st *Struct) string {
 	return sql
 }
 
+func createBeanInsertSQL(st *Struct) string {
+	var sql string
+	sql = "INSERT INTO " + st.Table.Name + " ("
+
+	if len(st.Table.Columns) == 1 && st.Table.Columns[0].IsPrimaryKey && st.Table.AutoGenPk{
+		sql = sql + st.Table.Columns[0].Name + ") VALUES (DEFAULT)"
+	} else {
+		var colNames []string
+		for _, c := range st.Table.Columns {
+			if c.IsPrimaryKey && st.Table.AutoGenPk {
+				continue
+			} else {
+				colNames = append(colNames, c.Name)
+			}
+		}
+		sql = sql + flatten(colNames, ", ") + ") VALUES ("
+
+		var fieldNames []string
+		for _, f := range st.Fields {
+			if f.Column.IsPrimaryKey && st.Table.AutoGenPk {
+				continue
+			} else {
+				fieldNames = append(fieldNames, fmt.Sprintf(":e.%s", f.JavaName()))
+			}
+		}
+		sql = sql + flatten(fieldNames, ",") + ")"
+	}
+
+	if st.Table.AutoGenPk {
+		sql = sql + " RETURNING "
+		for i, c := range st.Table.PrimaryKeys {
+			if i == 0 {
+				sql = sql + c.Name
+			} else {
+				sql = sql + ", " + c.Name
+			}
+		}
+	}
+	return sql
+}
+
 func createDeleteByPkSQL(st *Struct) string {
 	var sql string
 	var colNames []string
@@ -205,12 +247,12 @@ func createDeleteByPkSQL(st *Struct) string {
 		colNames = append(colNames, c.Name)
 	}
 	sql = "DELETE FROM " + st.Table.Name + " WHERE "
+    placeHolder := " = ?"
 	for i, c := range pkNames {
-	    placeHolder := i
 		if i == 0 {
-			sql = sql + c + fmt.Sprintf(" = :%d", placeHolder)
+			sql = sql + c + placeHolder
 		} else {
-			sql = sql + " AND " + c + fmt.Sprintf(" = :%d", placeHolder)
+			sql = sql + " AND " + c + placeHolder
 		}
 	}
 	return sql
@@ -226,7 +268,7 @@ func createUpdateByPkSQL(st *Struct) string {
 		    pkNames = append(pkNames, c.Name)
 			continue
 		}
-		columnUpdates = append(columnUpdates, fmt.Sprintf("%s = :e.%s", c.Name, f.Name))
+		columnUpdates = append(columnUpdates, fmt.Sprintf("%s = :e.%s", c.Name, f.JavaName()))
 	}
 	sql = "UPDATE " + st.Table.Name + " SET " + flatten(columnUpdates, ", ") + " WHERE "
 	for i, c := range pkNames {
