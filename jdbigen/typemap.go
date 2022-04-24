@@ -35,12 +35,12 @@ nullable_go_type = "Boolean"
 
 [smallint]
 db_types = ["smallint"]
-notnull_go_type = "integer"
+notnull_go_type = "int"
 nullable_go_type = "Integer"
 
 [integer]
 db_types = ["integer"]
-notnull_go_type = "integer"
+notnull_go_type = "int"
 nullable_go_type = "Integer"
 
 [bigint]
@@ -50,12 +50,12 @@ nullable_go_type = "Long"
 
 [smallserial]
 db_types = ["smallserial"]
-notnull_go_type = "integer"
+notnull_go_type = "int"
 nullable_go_type = "Integer"
 
 [serial]
 db_types = ["serial"]
-notnull_go_type = "integer"
+notnull_go_type = "int"
 nullable_go_type = "Integer"
 
 [real]
