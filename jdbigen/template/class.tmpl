@@ -3,7 +3,7 @@
 public class {{ .Struct.Name }}Entity {
     {{- range .Struct.Fields }}
     // @Column(name="{{ .Column.Name }}")
-    private {{ .Type }} {{ .Name }};
+    private {{ .Type }} {{ .JavaName }};
     {{- end }}
     // TODO: Generate Getters and Setters
 }

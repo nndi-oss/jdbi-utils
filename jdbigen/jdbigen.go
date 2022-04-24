@@ -177,6 +177,14 @@ type StructField struct {
 	Column *PgColumn
 }
 
+
+func (sf *StructField) JavaName() string {
+    if len(sf.Name) == 1 {
+        return strings.ToLower(sf.Name)
+    }
+    return strings.ToLower(string(sf.Name[0])) + sf.Name[1:]
+}
+
 // PgLoadTypeMapFromFile load type map from toml file
 func PgLoadTypeMapFromFile(filePath string) (*PgTypeMapConfig, error) {
 	var conf PgTypeMapConfig
