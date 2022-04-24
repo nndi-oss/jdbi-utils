@@ -8,10 +8,10 @@ import (
 
 var tmplFuncMap = template.FuncMap{
 	"createInsertSQL":            createInsertSQL,
-	"createBeanInsertSQL":            createBeanInsertSQL,
+	"createBeanInsertSQL":        createBeanInsertSQL,
 	"createInsertParams":         createInsertParams,
 	"createInsertScan":           createInsertScan,
-	"createSelectSQL":        createSelectSQL,
+	"createSelectSQL":            createSelectSQL,
 	"createSelectByPkSQL":        createSelectByPkSQL,
 	"createSelectByPkFuncParams": createSelectByPkFuncParams,
 	"createSelectByPkSQLParams":  createSelectByPkSQLParams,
@@ -20,8 +20,8 @@ var tmplFuncMap = template.FuncMap{
 	"createUpdateByPkSQL":        createUpdateByPkSQL,
 	// Utility functions
 	"flattenStructFieldNames": flattenStructFieldNames,
-	"getPrimaryKeyFieldType": getPrimaryKeyFieldType,
-	"ToUpper" : strings.ToUpper,
+	"getPrimaryKeyFieldType":  getPrimaryKeyFieldType,
+	"ToUpper":                 strings.ToUpper,
 }
 
 func createSelectSQL(st *Struct) string {
@@ -49,7 +49,7 @@ func createSelectByPkSQL(st *Struct) string {
 		colNames = append(colNames, c.Name)
 	}
 	sql = "SELECT " + flatten(colNames, ", ") + " FROM " + st.Table.Name + " WHERE "
-    placeHolder := " = ?"
+	placeHolder := " = ?"
 	for i, c := range pkNames {
 		if i == 0 {
 			sql = sql + c + placeHolder
@@ -121,12 +121,12 @@ func getPrimaryKeyFieldType(st *Struct) string {
 }
 
 func flattenStructFieldNames(st *Struct, sep string) string {
-    fieldNames := make([]string, 0)
-    for _, field := range st.Fields {
-        fieldNames = append(fieldNames, field.Name)
-    }
+	fieldNames := make([]string, 0)
+	for _, field := range st.Fields {
+		fieldNames = append(fieldNames, field.Name)
+	}
 
-    return flatten(fieldNames, sep)
+	return flatten(fieldNames, sep)
 }
 
 func flatten(elems []string, sep string) string {
@@ -158,7 +158,7 @@ func createInsertSQL(st *Struct) string {
 	var sql string
 	sql = "INSERT INTO " + st.Table.Name + " ("
 
-	if len(st.Table.Columns) == 1 && st.Table.Columns[0].IsPrimaryKey && st.Table.AutoGenPk{
+	if len(st.Table.Columns) == 1 && st.Table.Columns[0].IsPrimaryKey && st.Table.AutoGenPk {
 		sql = sql + st.Table.Columns[0].Name + ") VALUES (DEFAULT)"
 	} else {
 		var colNames []string
@@ -199,7 +199,7 @@ func createBeanInsertSQL(st *Struct) string {
 	var sql string
 	sql = "INSERT INTO " + st.Table.Name + " ("
 
-	if len(st.Table.Columns) == 1 && st.Table.Columns[0].IsPrimaryKey && st.Table.AutoGenPk{
+	if len(st.Table.Columns) == 1 && st.Table.Columns[0].IsPrimaryKey && st.Table.AutoGenPk {
 		sql = sql + st.Table.Columns[0].Name + ") VALUES (DEFAULT)"
 	} else {
 		var colNames []string
@@ -247,7 +247,7 @@ func createDeleteByPkSQL(st *Struct) string {
 		colNames = append(colNames, c.Name)
 	}
 	sql = "DELETE FROM " + st.Table.Name + " WHERE "
-    placeHolder := " = ?"
+	placeHolder := " = ?"
 	for i, c := range pkNames {
 		if i == 0 {
 			sql = sql + c + placeHolder
@@ -263,9 +263,9 @@ func createUpdateByPkSQL(st *Struct) string {
 	var columnUpdates []string
 	var pkNames []string
 	for _, f := range st.Fields {
-	    c := f.Column
+		c := f.Column
 		if c.IsPrimaryKey {
-		    pkNames = append(pkNames, c.Name)
+			pkNames = append(pkNames, c.Name)
 			continue
 		}
 		columnUpdates = append(columnUpdates, fmt.Sprintf("%s = :e.%s", c.Name, f.JavaName()))

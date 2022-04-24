@@ -177,12 +177,11 @@ type StructField struct {
 	Column *PgColumn
 }
 
-
 func (sf *StructField) JavaName() string {
-    if len(sf.Name) == 1 {
-        return strings.ToLower(sf.Name)
-    }
-    return strings.ToLower(string(sf.Name[0])) + sf.Name[1:]
+	if len(sf.Name) == 1 {
+		return strings.ToLower(sf.Name)
+	}
+	return strings.ToLower(string(sf.Name[0])) + sf.Name[1:]
 }
 
 // PgLoadTypeMapFromFile load type map from toml file
@@ -384,33 +383,33 @@ func PgCreateStruct(
 			src = append(src, s...)
 		} else {
 			if pkgName != "" {
-                pkgDef := []byte(fmt.Sprintf("package %s;\n\n", pkgName))
-                src = append(src, pkgDef...)
-        	}
-    		c, err := PgExecuteDefaultTmpl(&StructTmpl{Struct: st}, "template/class.tmpl")
-            if err != nil {
-                return src, errors.Wrap(err, "faield to execute template")
-            }
-            src = append(src, c...)
-            src = append(src, []byte("\n----\n\n")...)
-            if pkgName != "" {
-                pkgDef := []byte(fmt.Sprintf("package %s;\n\n", pkgName))
-                src = append(src, pkgDef...)
-            }
+				pkgDef := []byte(fmt.Sprintf("package %s;\n\n", pkgName))
+				src = append(src, pkgDef...)
+			}
+			c, err := PgExecuteDefaultTmpl(&StructTmpl{Struct: st}, "template/class.tmpl")
+			if err != nil {
+				return src, errors.Wrap(err, "faield to execute template")
+			}
+			src = append(src, c...)
+			src = append(src, []byte("\n----\n\n")...)
+			if pkgName != "" {
+				pkgDef := []byte(fmt.Sprintf("package %s;\n\n", pkgName))
+				src = append(src, pkgDef...)
+			}
 
-            if *generateAsSqlHandle {
-                m, err := PgExecuteDefaultTmpl(&StructTmpl{Struct: st}, "template/usehandle.tmpl")
-                if err != nil {
-                    return src, errors.Wrap(err, "faield to execute template")
-                }
-                src = append(src, m...)
-		    } else {
-		        s, err := PgExecuteDefaultTmpl(&StructTmpl{Struct: st}, "template/sqlobject.tmpl")
-                if err != nil {
-                    return src, errors.Wrap(err, "faield to execute template")
-                }
-                src = append(src, s...)
-            }
+			if *generateAsSqlHandle {
+				m, err := PgExecuteDefaultTmpl(&StructTmpl{Struct: st}, "template/usehandle.tmpl")
+				if err != nil {
+					return src, errors.Wrap(err, "faield to execute template")
+				}
+				src = append(src, m...)
+			} else {
+				s, err := PgExecuteDefaultTmpl(&StructTmpl{Struct: st}, "template/sqlobject.tmpl")
+				if err != nil {
+					return src, errors.Wrap(err, "faield to execute template")
+				}
+				src = append(src, s...)
+			}
 		}
 	}
 	return src, nil

@@ -14,10 +14,10 @@ var (
 		"conn", "PostgreSQL connection string in URL format").Required().String()
 	schema = kingpin.Flag(
 		"schema", "PostgreSQL schema name").Default("public").Short('s').String()
-	pkgName          = kingpin.Flag("package", "package name").Default("").Short('p').String()
-	typeMapFilePath  = kingpin.Flag("typemap", "column type and go type map file path").Short('t').String()
-	exTbls           = kingpin.Flag("exclude", "table names to exclude").Short('x').Strings()
-	outFile          = kingpin.Flag("output", "output file path").Short('o').String()
+	pkgName             = kingpin.Flag("package", "package name").Default("").Short('p').String()
+	typeMapFilePath     = kingpin.Flag("typemap", "column type and go type map file path").Short('t').String()
+	exTbls              = kingpin.Flag("exclude", "table names to exclude").Short('x').Strings()
+	outFile             = kingpin.Flag("output", "output file path").Short('o').String()
 	generateAsSqlHandle = kingpin.Flag("sqlhandle", "output as SQL handlers").Bool()
 )
 
