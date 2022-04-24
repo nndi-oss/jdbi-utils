@@ -3,6 +3,24 @@ Jdbi3 Utilities
 
 A set of utilities for working with [Jdbi 3](https://github.com/jdbi/jdbi)
 
+## jdbigen
+
+A command-line program to generate DAO classes from database tables complete with CRUD queries
+
+**Usage**
+
+Generates DAOs as `interface` SqlObjects
+
+`$ jdbigen --package "com.example" --exclude schema_version "postgres://user:password@localhost/database?sslmode=disable"`
+
+Generate DAOs as a regular `class` that uses `Jdbi.withHandle` 
+
+`$ jdbigen --sqlhandle --package "com.example" --exclude schema_version "postgres://user:password@localhost/database?sslmode=disable"`
+
+More information [here](jdbigen/README.md) 
+
+## Customizers
+
 ### Counter
 
 Use the `CounterCustomizer` to automatically update a "counter field" in a table.
@@ -108,7 +126,7 @@ public class Application {
 binding annotation - but that's not been tested thoroughly.
 
 
-### @UseClasspathSqlLocator compile-time checks
+## @UseClasspathSqlLocator compile-time checks
 
 The `useclasspathsql-checker` module implements an Annotation Processor that checks that 
 SQL files for methods on your DAOs (SqlObjects in JDBI speak) exist and are not empty. 
