@@ -220,20 +220,20 @@ func createUpdateByPkSQL(st *Struct) string {
 	var sql string
 	var columnUpdates []string
 	var pkNames []string
-	for _, c := range st.Table.Columns {
+	for _, f := range st.Fields {
+	    c := f.Column
 		if c.IsPrimaryKey {
 		    pkNames = append(pkNames, c.Name)
 			continue
 		}
-		columnUpdates = append(columnUpdates, fmt.Sprintf("%s = :e.%s", c.Name, c.Name))
+		columnUpdates = append(columnUpdates, fmt.Sprintf("%s = :e.%s", c.Name, f.Name))
 	}
 	sql = "UPDATE " + st.Table.Name + " SET " + flatten(columnUpdates, ", ") + " WHERE "
 	for i, c := range pkNames {
-	    placeHolder := i
 		if i == 0 {
-			sql = sql + c + fmt.Sprintf(" = :%d", placeHolder)
+			sql = sql + c + fmt.Sprintf(" = :e.%s", c)
 		} else {
-			sql = sql + " AND " + c + fmt.Sprintf(" = :%d", placeHolder)
+			sql = sql + " AND " + c + fmt.Sprintf(" = :%s", c)
 		}
 	}
 	return sql
