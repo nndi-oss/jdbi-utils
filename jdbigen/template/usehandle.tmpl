@@ -1,0 +1,89 @@
+import org.jdbi.v3.core.Jdbi;
+
+import java.util.List;
+import java.util.Optional;
+
+// {{ .Struct.Name }} represents {{ .Struct.Table.Schema }}.{{ .Struct.Table.Name }}
+public class {{ .Struct.Name }}DAO {
+    private final Jdbi jdbi;
+
+    public {{ .Struct.Name }}DAO(Jdbi jdbi) {
+        this.jdbi = jdbi;
+    }
+
+    public List<{{ .Struct.Name }}Entity> findAll() {
+        return jdbi.withHandle(handle -> handle.createQuery("{{ createSelectSQL .Struct }}")
+            .mapToBean({{ .Struct.Name }}Entity.class)
+            .list());
+    }
+
+    public List<{{ .Struct.Name }}Entity> findAllPaginated(int limit, int offset) {
+        return jdbi.withHandle(handle -> handle.createQuery("{{ createSelectSQL .Struct }} OFFSET :offset LIMIT :limit")
+                .bind("limit", limit)
+                .bind("offset", offset)
+                .mapToBean({{ .Struct.Name }}Entity.class)
+                .list());
+    }
+
+    public Optional<{{ .Struct.Name }}Entity> findById({{ getPrimaryKeyFieldType .Struct }} id) {
+        return jdbi.withHandle(handle -> handle.createQuery("{{ createSelectByPkSQL .Struct }}")
+            .bind(0, id)
+            .mapToBean({{ .Struct.Name }}Entity.class)
+            .findOne());
+    }
+
+    public void insert({{ .Struct.Name }}Entity entity) {
+        jdbi.withHandle(handle -> {
+            return handle.createUpdate("{{ createBeanInsertSQL .Struct }}")
+                .bindBean("e", entity)
+                .execute();
+        });
+    }
+
+    public void update({{ .Struct.Name }}Entity entity) {
+        jdbi.withHandle(handle -> {
+            return handle.createUpdate("{{ createUpdateByPkSQL .Struct }}")
+                .bindBean("e", entity)
+                .execute();
+        });
+    }
+
+    public void delete({{ getPrimaryKeyFieldType .Struct }} id) {
+        jdbi.withHandle(handle -> {
+            return handle.createUpdate("{{ createDeleteByPkSQL .Struct }}")
+                .bind(0, id)
+                .execute();
+        });
+    }
+
+    public static record Pagination (int pageNumber, int pageSize, {{ .Struct.Name }}DAO.OrderBy orderBy) {}
+    // ORDER BY <orderBy>
+    public static enum OrderBy {
+    {{- range .Struct.Fields }}
+        {{ ToUpper .Column.Name }}_ASC("{{ .Column.Name }} ASC"),
+        {{ ToUpper .Column.Name }}_DESC("{{ .Column.Name }} DESC"),
+    {{- end }}
+        NONE(" -- ");
+
+        public final String sql;
+
+        OrderBy(String sql) {
+            this.sql = sql;
+        }
+
+        /**
+         * Example: <code>String orderbySql = OrderBy.ID_ASC.thenOrderBy(CREATED_AT_ASC, ID_ASC);</code>
+         */
+        public String thenOrderBy(OrderBy... others) {
+            if (this == NONE) return "";
+            var sb = new StringBuilder();
+            sb.append(this.sql).append(", ");
+            for(int i = 0; i < others.length - 1; i++) {
+                sb.append(others[i].sql).append(", ");
+            }
+            sb.append(others[others.length - 1].sql);
+
+            return sb.toString();
+        }
+    }
+}

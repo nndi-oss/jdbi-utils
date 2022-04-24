@@ -1,0 +1,63 @@
+import org.jdbi.v3.core.mapper.RowMapper;
+import org.jdbi.v3.core.statement.StatementContext;
+import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
+import org.jdbi.v3.sqlobject.config.RegisterRowMapper;
+import org.jdbi.v3.sqlobject.customizer.Bind;
+import org.jdbi.v3.sqlobject.customizer.BindBean;
+import org.jdbi.v3.sqlobject.customizer.Timestamped;
+import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
+import org.jdbi.v3.sqlobject.statement.SqlQuery;
+import org.jdbi.v3.sqlobject.statement.SqlUpdate;
+
+// {{ .Struct.Name }}Entity represents {{ .Struct.Table.Schema }}.{{ .Struct.Table.Name }}
+@RegisterBeanMapper({{ .Struct.Name }}Entity.class)
+public interface {{ .Struct.Name }}DAO {
+    @SqlQuery("{{ createSelectSQL .Struct }}")
+    List<{{ .Struct.Name }}Entity> findAll();
+
+    @SqlQuery("{{ createSelectSQL .Struct }} OFFSET :offset LIMIT :limit")
+    List<{{ .Struct.Name }}Entity> findAllPaginated(@Bind("limit") int limit, @Bind("offset") int offset);
+
+    @SqlQuery("{{ createSelectByPkSQL .Struct }}")
+    Option<{{ .Struct.Name }}Entity> findById(@Bind {{ getPrimaryKeyFieldType .Struct }} id);
+
+    @SqlUpdate("{{ createBeanInsertSQL .Struct }}")
+    void insert(@BindBean("e") {{ .Struct.Name }}Entity entity);
+
+    @SqlUpdate("{{ createUpdateByPkSQL .Struct }}")
+    void update(@BindBean("e") {{ .Struct.Name }}Entity entity);
+
+    @SqlUpdate("{{ createDeleteByPkSQL .Struct }}")
+    void delete(@Bind {{ getPrimaryKeyFieldType .Struct }} id);
+
+    public static record Pagination (int pageNumber, int pageSize, {{ .Struct.Name }}DAO.OrderBy orderBy) {}
+    // ORDER BY <orderBy>
+    public static enum OrderBy {
+    {{- range .Struct.Fields }}
+        {{ ToUpper .Column.Name }}_ASC("{{ .Column.Name }} ASC"),
+        {{ ToUpper .Column.Name }}_DESC("{{ .Column.Name }} DESC"),
+    {{- end }}
+        NONE(" -- ");
+
+        public final String sql;
+
+        OrderBy(String sql) {
+            this.sql = sql;
+        }
+
+        /**
+         * Example: <code>String orderbySql = OrderBy.ID_ASC.thenOrderBy(CREATED_AT_ASC, ID_ASC);</code>
+         */
+        public String thenOrderBy(OrderBy... others) {
+            if (this == NONE) return "";
+            var sb = new StringBuilder();
+            sb.append(this.sql).append(", ");
+            for(int i = 0; i < others.length - 1; i++) {
+                sb.append(others[i].sql).append(", ");
+            }
+            sb.append(others[others.length - 1].sql);
+
+            return sb.toString();
+        }
+    }
+}
