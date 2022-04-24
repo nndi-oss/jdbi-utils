@@ -34,10 +34,8 @@ public class {{ .Struct.Name }}DAO {
 
     public void insert({{ .Struct.Name }}Entity entity) {
         jdbi.withHandle(handle -> {
-            return handle.createUpdate("")
-                {{- range .Struct.Fields }}
-                .bind("{{ .Name }}", entity.get{{ .Name }}())
-                {{- end }}
+            return handle.createUpdate("{{ createBeanInsertSQL .Struct }}")
+                .bindBean("e", entity)
                 .execute();
         });
     }
@@ -45,9 +43,7 @@ public class {{ .Struct.Name }}DAO {
     public void update({{ .Struct.Name }}Entity entity) {
         jdbi.withHandle(handle -> {
             return handle.createUpdate("{{ createUpdateByPkSQL .Struct }}")
-                {{- range .Struct.Fields }}
-                .bind("{{ .Name }}", entity.get{{ .Name }}())
-                {{- end }}
+                .bindBean("e", entity)
                 .execute();
         });
     }
@@ -55,7 +51,7 @@ public class {{ .Struct.Name }}DAO {
     public void delete({{ getPrimaryKeyFieldType .Struct }} id) {
         jdbi.withHandle(handle -> {
             return handle.createUpdate("{{ createDeleteByPkSQL .Struct }}")
-                .bind(0, {{ .Struct.Name }}.getId())
+                .bind(0, id)
                 .execute();
         });
     }
