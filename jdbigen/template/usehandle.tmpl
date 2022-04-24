@@ -55,4 +55,35 @@ public class {{ .Struct.Name }}DAO {
                 .execute();
         });
     }
+
+    public static record Pagination (int pageNumber, int pageSize, {{ .Struct.Name }}DAO.OrderBy orderBy) {}
+    // ORDER BY <orderBy>
+    public static enum OrderBy {
+    {{- range .Struct.Fields }}
+        {{ ToUpper .Column.Name }}_ASC("{{ .Column.Name }} ASC"),
+        {{ ToUpper .Column.Name }}_DESC("{{ .Column.Name }} DESC"),
+    {{- end }}
+        NONE(" -- ");
+
+        public final String sql;
+
+        OrderBy(String sql) {
+            this.sql = sql;
+        }
+
+        /**
+         * Example: <code>String orderbySql = OrderBy.ID_ASC.thenOrderBy(CREATED_AT_ASC, ID_ASC);</code>
+         */
+        public String thenOrderBy(OrderBy... others) {
+            if (this == NONE) return "";
+            var sb = new StringBuilder();
+            sb.append(this.sql).append(", ");
+            for(int i = 0; i < others.length - 1; i++) {
+                sb.append(others[i].sql).append(", ");
+            }
+            sb.append(others[others.length - 1].sql);
+
+            return sb.toString();
+        }
+    }
 }
