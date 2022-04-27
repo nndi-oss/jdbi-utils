@@ -6,7 +6,6 @@ import org.jdbi.v3.core.statement.StatementCustomizer;
 import org.slf4j.LoggerFactory;
 
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Optional;
 

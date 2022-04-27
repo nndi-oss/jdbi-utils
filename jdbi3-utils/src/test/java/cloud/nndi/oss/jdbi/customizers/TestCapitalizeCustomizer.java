@@ -4,6 +4,8 @@ import cloud.nndi.oss.jdbi.HsqldbDatabaseRule;
 import cloud.nndi.oss.jdbi.customizers.CapitalizeCustomizer;
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
+import org.jdbi.v3.sqlobject.customizer.Bind;
+import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,7 +32,7 @@ public class TestCapitalizeCustomizer {
     }
 
     @Test
-    public void testShouldIncrementColumnToOne() {
+    public void testShouldCapitalize() {
         hsql.getSharedHandle()
             .createUpdate("INSERT INTO people2(first_name, last_name) VALUES (:first_name, :last_name)")
             .bind("first_name", "John William")
@@ -44,5 +46,23 @@ public class TestCapitalizeCustomizer {
             .first();
 
         assertEquals("JOHN WILLIAM BANDA", got);
+    }
+
+    @Test
+    public void testShouldCapitalizeViaSqlObject() {
+        hsql.onDemand(DAO.class).insert("John William", "Banda");
+
+        String got = hsql.getSharedHandle()
+            .createQuery("SELECT first_name + ' ' + last_name FROM people2 LIMIT 1")
+            .mapTo(String.class)
+            .first();
+
+        assertEquals("JOHN WILLIAM BANDA", got);
+    }
+
+    private static interface DAO {
+        @SqlUpdate("INSERT INTO people2(first_name, last_name) VALUES (:first_name, :last_name)")
+        @Capitalize({"first_name", "last_name"})
+        void insert(@Bind("first_name") String firstName, @Bind("last_name") String lastName);
     }
 }
