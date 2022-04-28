@@ -22,8 +22,8 @@ More information [here](jdbigen/README.md)
 ## Customizers
 
 ### Counter
-
-Use the `CounterCustomizer` to automatically update a "counter field" in a table.
+<details>
+<summary>Use the `CounterCustomizer` to automatically update a "counter field" in a table.</summary>
 
 For example if you wanted to update a user's post count after inserting a new Post
 you would do something like this:
@@ -52,10 +52,11 @@ public interface PostDAO {
 ```
 
 You can also make the counter decrement by setting the `decrementing` argument to `true` in the annotation.
+</details>
 
 ### Capitalize Customizer
-
-Use the `CapitalizeCustomizer` to automatically set bound fields to UPPER CASE!
+<details>
+<summary>Use the `CapitalizeCustomizer` to automatically set bound fields to UPPER CASE!</summary>
 
 For example if you wanted to capitalize the content of each Post before saving
 to the database you would do something like this:
@@ -68,11 +69,29 @@ Jdbi.open()
     .addCustomizer(new CapitalizeCustomizer("content"))
     .execute();
 ```
+</details>
+
+### Base64 Encoder
+<details>
+<summary>Use the `Base64Customizer` to automatically encode bound fields to Base64</summary>
+
+For example if you wanted to Base64 encode the content of each Post before saving  to the database you would do something like this:
+
+```java
+Jdbi.open()
+    .createUpdate("INSERT INTO posts(content, user_id) VALUES (:content, :user_id)")
+    .bind("content", "Yay! Post content!")
+    .bind("user_id", 1)
+    .addCustomizer(new Base64Customizer("content"))
+    .execute();
+```
+</details>
+
 
 ### Validation
-
-The `@Valid` annotation provides validation for your method parameters in SqlObject methods.
-The validation is done via the Hibernate Validator.
+<details>
+<summary>The `@Valid` annotation provides validation for your method parameters in SqlObject methods.
+The validation is done via the Hibernate Validator.</summary>
 
 The annotation also supports validation groups.
 
@@ -124,12 +143,12 @@ public class Application {
 
 > NOTE: You don't necessarily have to use the `@BindBean` annotation. It should work with any
 binding annotation - but that's not been tested thoroughly.
-
+</details>
 
 ## @UseClasspathSqlLocator compile-time checks
-
-The `useclasspathsql-checker` module implements an Annotation Processor that checks that 
-SQL files for methods on your DAOs (SqlObjects in JDBI speak) exist and are not empty. 
+<details>
+<summary>The `useclasspathsql-checker` module implements an Annotation Processor that checks that 
+SQL files for methods on your DAOs (SqlObjects in JDBI speak) exist and are not empty.</summary> 
 
 In particular, it checks for SqlObjects that use the `@UseClasspathSqlLocator`
 feature. It checks for SQL files for methods annotated with `@SqlQuery` or `@SqlUpdate`.
@@ -159,6 +178,7 @@ This will generate an error like the following if an SQL file cannot be found:
 ```
 [ERROR] .../jdbi-utils/example/src/main/java/com/github/zikani03/jdbi/ExampleDAO.java:[7,8] ClasspathSqlChecker could not find or load SQL file: ExampleDAO/selectOne.sql
 ```
+</details>
 
 ## Installation
 
