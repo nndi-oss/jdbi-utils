@@ -17,8 +17,8 @@
     </modules>
 
     <scm>
-        <connection>scm:git:git://github.com/nndi-oss/jdbi-utils.git</connection>
-        <developerConnection>scm:git:git://github.com/nndi-oss/jdbi-utils.git</developerConnection>
+        <connection>scm:git:git@github.com:nndi-oss/jdbi-utils.git</connection>
+        <developerConnection>scm:git:git@github.com:nndi-oss/jdbi-utils.git</developerConnection>
         <url>scm:git:git@github.com:nndi-oss/jdbi-utils.git</url>
         <tag>jdbi3-utils-parent-0.1.0</tag>
     </scm>
