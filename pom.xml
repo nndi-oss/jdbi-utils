@@ -18,10 +18,22 @@
     </modules>
 
     <scm>
-        <connection>scm:git:https://github.com/nndi-oss/jdbi-utils.git</connection>
-        <developerConnection>scm:git:https://github.com/nndi-oss/jdbi-utils.git</developerConnection>
-        <url>scm:git:https://github.com/nndi-oss/jdbi-utils</url>
+        <connection>scm:git:git://github.com/nndi-oss/jdbi-utils.git</connection>
+        <developerConnection>scm:git:git://github.com/nndi-oss/jdbi-utils.git</developerConnection>
+        <url>scm:git:git://github.com:nndi-oss/jdbi-utils.git</url>
+        <tag>main</tag>
     </scm>
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/nndi-oss/jdbi-utils/issues</url>
+    </issueManagement>
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>NNDI jdbi-utils Github Packages</name>
+            <url>https://maven.pkg.github.com/nndi-oss/jdbi-utils</url>
+        </repository>
+    </distributionManagement>
 
     <developers>
         <developer>
