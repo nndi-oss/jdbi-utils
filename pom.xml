@@ -12,6 +12,7 @@
     <url>https://github.com/nndi-oss/jdbi-utils</url>
 
     <modules>
+        <module>example</module>
         <module>jdbi3-utils</module>
         <module>jdbi3-classpathsql-checker</module>
     </modules>
