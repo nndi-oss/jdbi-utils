@@ -1,9 +1,8 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>cloud.nndi.oss</groupId>
     <artifactId>jdbi3-utils-parent</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.0</version>
     <packaging>pom</packaging>
 
     <name>Jdbi3 Utilities Parent</name>
@@ -21,7 +20,7 @@
         <connection>scm:git:git://github.com/nndi-oss/jdbi-utils.git</connection>
         <developerConnection>scm:git:git://github.com/nndi-oss/jdbi-utils.git</developerConnection>
         <url>scm:git:git://github.com:nndi-oss/jdbi-utils.git</url>
-        <tag>main</tag>
+        <tag>jdbi3-utils-parent-0.1.0</tag>
     </scm>
     <issueManagement>
         <system>GitHub</system>
