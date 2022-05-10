@@ -9,6 +9,9 @@ import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
+import java.util.List;
+import java.util.Optional;
+
 // {{ .Struct.Name }}Entity represents {{ .Struct.Table.Schema }}.{{ .Struct.Table.Name }}
 @RegisterBeanMapper({{ .Struct.Name }}Entity.class)
 public interface {{ .Struct.Name }}DAO {
@@ -19,7 +22,7 @@ public interface {{ .Struct.Name }}DAO {
     List<{{ .Struct.Name }}Entity> findAllPaginated(@Bind("limit") int limit, @Bind("offset") int offset);
 
     @SqlQuery("{{ createSelectByPkSQL .Struct }}")
-    Option<{{ .Struct.Name }}Entity> findById(@Bind {{ getPrimaryKeyFieldType .Struct }} id);
+    Optional<{{ .Struct.Name }}Entity> findById(@Bind {{ getPrimaryKeyFieldType .Struct }} id);
 
     @SqlUpdate("{{ createBeanInsertSQL .Struct }}")
     void insert(@BindBean("e") {{ .Struct.Name }}Entity entity);

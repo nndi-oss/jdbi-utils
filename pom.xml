@@ -28,7 +28,7 @@
     </issueManagement>
     <distributionManagement>
         <repository>
-            <id>github</id>
+            <id>nndi-oss</id>
             <name>NNDI jdbi-utils Github Packages</name>
             <url>https://maven.pkg.github.com/nndi-oss/jdbi-utils</url>
         </repository>
